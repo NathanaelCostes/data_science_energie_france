@@ -14,11 +14,15 @@ library(leaflet)
 fluidPage(
   titlePanel("Energie en France"),
   mainPanel(
+    plotOutput("origineElec"),
+    plotOutput("emissionCO2"),
     plotOutput("manqueProd"),
     plotlyOutput("choroplethPlot"),
     plotOutput("graphique_conso_secteur"),
     plotOutput("graphique_conso_filiere"),
     plotOutput("graphique_conso_secteur_elec"),
-    plotOutput("graphique_conso_secteur_gaz")
+    plotOutput("graphique_conso_secteur_gaz"),
+    plotOutput("disponibiliteCentrales")
+
   )
 )
