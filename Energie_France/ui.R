@@ -14,7 +14,10 @@ library(leaflet)
 fluidPage(
   titlePanel("Energie en France"),
   mainPanel(
+    plotOutput("origineElec"),
+    plotOutput("emissionCO2"),
     plotOutput("manqueProd"),
-    plotlyOutput("choroplethPlot")
+    plotlyOutput("choroplethPlot"),
+    plotOutput("disponibiliteCentrales")
   )
 )

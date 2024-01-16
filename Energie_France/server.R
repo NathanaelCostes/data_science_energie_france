@@ -5,20 +5,64 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
-#library(shiny)
+
+library(shiny)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(reticulate)
 library(plotly)
 
+
 reticulate::py_install("pandas")
 reticulate::py_install("plotly")
 
+
+
 function(input, output, session) {
   
+  data <- read.csv("./data/origine_elec_clean.csv", header = TRUE, sep = ";")
+  
+  
+  # Separate datasets for main sources and CO2 emissions
+  main_sources_data <- data[data$categorie != "Emission de CO2", ]
+  co2_data <- data[data$categorie == "Emission de CO2", ]
+  
+  # Plot for main sources
+  output$origineElec <- renderPlot({
+   ggplot(main_sources_data, aes(x = annee, y = as.numeric(valeur), fill = sous_categorie)) +
+      geom_col(position = "stack") +
+      scale_fill_manual(values = c(
+        "Charbon" = "#073b4c",         
+        "Fioul" = "#f78c6b",
+        "Autres Renouvelables" = "#06d6a0",  
+        "Nucléaire" = "#ef476f",      
+        "Hydraulique" = "#118ab2",
+        "Gaz" = "#ffd166"
+      )) +
+      labs(title = "Origine de l'électricité par source d'énergie",
+           x = "Année",
+           y = "Pourcentage") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better visibility
+  })
+  
+  # Plot for CO2 emissions with a secondary y-axis
+  output$emissionCO2 <- renderPlot({
+    ggplot(co2_data, aes(x = annee, y = as.numeric(valeur), fill = sous_categorie)) +
+      geom_col(position = "stack") +
+      scale_fill_manual(values = c(
+        "CO2" = "#999999"
+      )) +
+      labs(title = "Émission de CO2 par production d'élécticité",
+           x = "Année",
+           y = "g/kWh fourni") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
+  })
+  
   # Assuming data is your data frame
-  data <- read.csv("./data/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
+  data <- read.csv("E:/Travail/INFO4/ProjetR/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
   
   # Convert date_de_debut to a date format if it's not already
   data$date_de_debut <- as.Date(data$date_de_debut)
@@ -28,6 +72,8 @@ function(input, output, session) {
   
   # Set the price per MWh
   price_per_kWh <- 168.33
+  
+  
   
   # Calculate the total money lost
   data$total_diff_power <- data$puissance_maximale_mw - data$puissance_disponible_mw
@@ -47,10 +93,12 @@ function(input, output, session) {
   data_filtered <- data_filtered %>%
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
+  View(data_filtered)
+  
   # Manually specify the order of levels for month_year
-  custom_order <- c( "févr. 2022", "janv. 2023", "févr. 2023", 
-                     "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-                     "oct. 2023", "nov. 2023", "déc. 2023")
+  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+                    "oct. 2023", "nov. 2023", "déc. 2023")
   
   # Transform
   DF_long <- data_filtered %>%
@@ -60,7 +108,6 @@ function(input, output, session) {
       values_to = "scaled_value"
     )
   
-  unique(data$month_year)
   
   # Convert month_year to a factor with the custom order
   DF_long$month_year <- factor(DF_long$month_year, levels = custom_order)
@@ -90,11 +137,6 @@ function(input, output, session) {
       ) +
       ggtitle('Manque de production des centrales nucleaires françaises en 2023')
   })
-  
-  
-  # Load required libraries
-  library(plotly)
-  library(dplyr)
   
   # Read the data
   conso <- read.csv("./data/conso_annuelle_clean.csv", sep=";")
@@ -162,8 +204,29 @@ function(input, output, session) {
   
   output$choroplethPlot <- renderPlotly({
     # Create a Plotly plot in R using the Python-generated JSON
-   fig
+    fig
   })
   
+  # Assuming data is your data frame
+  data <- read.csv("./data/disponibilite-du-parc-nucleaire-d-edf-sa-depuis-2002-clean.csv", header = TRUE, sep = ";")
+  
+  
+  # Create a plot with lines and colored area underneath
+  output$disponibiliteCentrales <- renderPlot({
+    
+    ggplot(data, aes(x = annee, y = coefficient_de_disponibilite)) +
+      geom_line(color = "darkslateblue", size = 1.5) +
+      geom_ribbon(aes(ymin = 0, ymax = coefficient_de_disponibilite), fill = "lightblue", alpha = 0.5) +
+      ggtitle("Disponnibilité des centrales nucleaires depuis 2002") +
+      xlab("Annee") +
+      ylab("Pourcentage de disponnibilité") +
+      theme_minimal() +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(color = 'darkslateblue', face = 'bold', hjust = 0.5),
+        axis.text = element_text(color = 'black', face = 'bold'),
+        axis.title = element_text(color = 'black', face = 'bold')
+      )
+  })
   
 }
