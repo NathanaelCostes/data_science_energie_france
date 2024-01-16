@@ -165,5 +165,93 @@ function(input, output, session) {
    fig
   })
   
+  # Consommation par secteur
+  # Je récupère les listes des "libelle_grand_secteur" pour connaitre les valeurs possibles de cette variable
+  libelle_grand_secteur <- unique(conso$libelle_grand_secteur)
+  libelle_grand_secteur
+  
+  # Je récupère la liste unique de la colonne "annee" pour connaitre les valeurs possibles de cette variable
+  annee <- unique(conso$annee)
+  
+  # Je calcule la consommation par secteur par année
+  conso_secteur_annee <- aggregate(conso ~ libelle_grand_secteur + annee, data = conso, FUN = sum)
+  conso_secteur_annee
+  
+  # Je fais un graphe geomline qui me permet de voir l'évolution de la consommation par secteur au cours des années
+  # Je l'affiche avec renderPlot
+  output$graphique_conso_secteur <- renderPlot({
+    
+    ggplot(data = conso_secteur_annee, aes(x = annee, y = conso, group = libelle_grand_secteur, color = libelle_grand_secteur)) + 
+      geom_line() + 
+      geom_point() + 
+      labs(title = "Evolution de la consommation par secteur au cours des années", 
+           x = "Année", 
+           y = "Consommation (MWh)") + 
+      theme(legend.position = "bottom",
+            axis.text.x = element_text(angle = 45, hjust = 1)) +  # Ajuste l'angle des étiquettes sur l'axe x
+      scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
+      scale_x_discrete(breaks = annee)
+    
+  })
+  
+  
+  # Je récupère les listes des "filiere" pour connaitre les valeurs possibles de cette variable
+  filieres <- unique(conso$filiere)
+  filieres
+  
+  
+  # Je calcule la consommation par secteur par année
+  conso_filiere_annee <- aggregate(conso ~ filiere + annee, data = conso, FUN = sum)
+  conso_filiere_annee
+  
+  # Je fais un graphe geomline qui me permet de voir l'évolution de la consommation par secteur au cours des années
+  # Je l'affiche avec renderPlot
+  output$graphique_conso_filiere <- renderPlot({
+    
+    ggplot(data = conso_filiere_annee, aes(x = annee, y = conso, group = filiere, color = filiere)) + 
+      geom_line() + 
+      geom_point() + 
+      labs(title = "Evolution de la consommation par type d'énergie au cours des années", 
+           x = "Année", 
+           y = "Consommation (MWh)") + 
+      theme(legend.position = "bottom",
+            axis.text.x = element_text(angle = 45, hjust = 1)) +  # Ajuste l'angle des étiquettes sur l'axe x
+      scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
+      scale_x_discrete(breaks = annee)
+    
+  })
+ 
+  
+  # Création du graphique en barres empilées de la consommation pour le secteur électricité
+  # Je l'affiche avec renderPlot
+  output$graphique_conso_secteur_elec <- renderPlot({
+    
+    ggplot(data = conso[conso$filiere == "Electricité",], aes(x = annee, y = conso, fill = libelle_grand_secteur)) + 
+      geom_bar(stat = "identity", position = "fill") + 
+      labs(title = "Répartition de la consommation d'électricité par secteur au cours des années", 
+           x = "Année", 
+           y = "Consommation (MWh)") + 
+      theme(legend.position = "bottom",
+            axis.text.x = element_text(angle = 45, hjust = 1)) +  # Ajuste l'angle des étiquettes sur l'axe x
+      scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
+      scale_x_discrete(breaks = annee)
+    
+  })
+  
+  # Création du graphique en barres empilées de la consommation pour le secteur gaz
+  # Je l'affiche avec renderPlot
+  output$graphique_conso_secteur_gaz <- renderPlot({
+    
+    ggplot(data = conso[conso$filiere == "Gaz",], aes(x = annee, y = conso, fill = libelle_grand_secteur)) + 
+      geom_bar(stat = "identity", position = "fill") + 
+      labs(title = "Répartition de la consommation de gaz par secteur au cours des années", 
+           x = "Année", 
+           y = "Consommation (MWh)") + 
+      theme(legend.position = "bottom",
+            axis.text.x = element_text(angle = 45, hjust = 1)) +  # Ajuste l'angle des étiquettes sur l'axe x
+      scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
+      scale_x_discrete(breaks = annee)
+    
+  })
   
 }

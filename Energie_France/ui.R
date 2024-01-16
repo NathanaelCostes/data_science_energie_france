@@ -15,6 +15,10 @@ fluidPage(
   titlePanel("Energie en France"),
   mainPanel(
     plotOutput("manqueProd"),
-    plotlyOutput("choroplethPlot")
+    plotlyOutput("choroplethPlot"),
+    plotOutput("graphique_conso_secteur"),
+    plotOutput("graphique_conso_filiere"),
+    plotOutput("graphique_conso_secteur_elec"),
+    plotOutput("graphique_conso_secteur_gaz")
   )
 )
