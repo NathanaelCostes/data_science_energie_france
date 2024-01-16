@@ -8,12 +8,13 @@
 #
 
 library(shiny)
+library(plotly)
+library(leaflet)
 
 fluidPage(
   titlePanel("Energie en France"),
   mainPanel(
     plotOutput("manqueProd"),
     plotlyOutput("choroplethPlot")
-  
   )
 )

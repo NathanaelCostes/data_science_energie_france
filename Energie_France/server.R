@@ -18,7 +18,7 @@ reticulate::py_install("plotly")
 function(input, output, session) {
   
   # Assuming data is your data frame
-  data <- read.csv("E:/Travail/INFO4/ProjetR/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
+  data <- read.csv("./data/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
   
   # Convert date_de_debut to a date format if it's not already
   data$date_de_debut <- as.Date(data$date_de_debut)
@@ -97,7 +97,7 @@ function(input, output, session) {
   library(dplyr)
   
   # Read the data
-  conso <- read.csv("E:/Travail/INFO4/ProjetR/conso_annuelle/conso_annuelle_clean.csv", sep=";")
+  conso <- read.csv("./data/conso_annuelle_clean.csv", sep=";")
   
   # Convert the 'annee' column to character format
   conso$annee <- as.character(conso$annee)
@@ -164,4 +164,6 @@ function(input, output, session) {
     # Create a Plotly plot in R using the Python-generated JSON
    fig
   })
+  
+  
 }
