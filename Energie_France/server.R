@@ -6,6 +6,7 @@
 #
 #    http://shiny.rstudio.com/
 
+library(FactoMineR)
 library(shiny)
 library(ggplot2)
 library(tidyr)
@@ -316,10 +317,9 @@ function(input, output, session) {
       scale_x_discrete(breaks = annee)
   })
 
-  # Création des graphiques de l'ACP pour la production
+  # Création des graphiques de l'ACP pour la production d'énergie
+
   # Charger les données
-  information <- readLines("./data/acp/info_acp.txt")
-  
   energy <- read.table("./data/acp/data_acp.csv", header = TRUE, sep = ",")
   rownames(energy) <- energy[, 1]
   energy <- energy[, -1]
@@ -327,15 +327,33 @@ function(input, output, session) {
   # ACP
   acp <- PCA(energy, graph = FALSE, scale.unit = TRUE)
   
-  # Représentation des variables
-  output$acpPlot <- renderPlotly({
-    plot_ly(x = acp$var$coord[, 1], y = acp$var$coord[, 2],
-            text = rownames(acp$var$coord),
-            mode = "markers+text",
-            marker = list(size = 10),
-            textposition = "bottom center") %>%
-      layout(title = "Représentation des variables",
-             xaxis = list(title = paste("Dimension 1 (", round(acp$eig[1, 2], 2), "%)")),
-             yaxis = list(title = paste("Dimension 2 (", round(acp$eig[2, 2], 2), "%)")))
+  # Résumé ACP
+  output$summary_output <- renderPrint({
+    summary(acp)
   })
+  
+  # Représentation des individus
+  output$ind_plot <- renderPlotly({
+    ind_data <- as.data.frame(acp$ind$coord)
+    ind_data$year <- rownames(ind_data)
+    
+    ggplotly(
+      ggplot(ind_data, aes(x = Dim.1, y = Dim.2, text = year)) +
+        geom_point() +
+        labs(title = "Représentation des individus")
+    )
+  })
+  
+  # Représentation des variables
+  output$var_plot <- renderPlotly({
+    var_data <- as.data.frame(acp$var$coord)
+    var_data$variable <- rownames(var_data)
+    
+    ggplotly(
+      ggplot(var_data, aes(x = Dim.1, y = Dim.2, text = variable)) +
+        geom_point() +
+        labs(title = "Représentation des variables")
+    )
+  })
+
 }

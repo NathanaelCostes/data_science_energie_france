@@ -23,6 +23,10 @@ fluidPage(
     tabPanel("Conso Secteur Electricite", plotOutput("graphique_conso_secteur_elec")),
     tabPanel("Conso Secteur Gaz", plotOutput("graphique_conso_secteur_gaz")),
     tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales")),
-    tabPanel("Consomation ACP", plotOutput("consomationACP"))
+    tabPanel("Production ACP", 
+      verbatimTextOutput("summary_output"), 
+      plotOutput("ind_plot"), 
+      plotOutput("var_plot")
+    )
   )
 )
