@@ -13,12 +13,6 @@ library(dplyr)
 library(reticulate)
 library(plotly)
 
-
-reticulate::py_install("pandas")
-reticulate::py_install("plotly")
-
-
-
 function(input, output, session) {
   
   data <- read.csv("./data/origine_elec_clean.csv", header = TRUE, sep = ";")
@@ -93,9 +87,15 @@ function(input, output, session) {
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
   # Manually specify the order of levels for month_year
-  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
-                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-                    "oct. 2023", "nov. 2023", "déc. 2023")
+  #custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+  #                  "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+  #                  "oct. 2023", "nov. 2023", "déc. 2023")
+  # Des fois il se met en anglais des fois en francais je ne sais pas pourquoi...
+  
+  # Manually specify the order of levels for month_year
+  custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
+                    "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
+                    "Oct 2023", "Nov 2023", "Dec 2023")
   
   # Transform
   DF_long <- data_filtered %>%
