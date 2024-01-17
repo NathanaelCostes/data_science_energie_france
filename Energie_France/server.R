@@ -13,6 +13,7 @@ library(tidyr)
 library(dplyr)
 library(reticulate)
 library(plotly)
+library(rmarkdown)
 
 function(input, output, session) {
   
@@ -317,43 +318,12 @@ function(input, output, session) {
       scale_x_discrete(breaks = annee)
   })
 
-  # Création des graphiques de l'ACP pour la production d'énergie
+  # Knit du document Rmd
+  rmarkdown::render("./data/acp/acp.Rmd", output_format = "html_document")
 
-  # Charger les données
-  energy <- read.table("./data/acp/data_acp.csv", header = TRUE, sep = ",")
-  rownames(energy) <- energy[, 1]
-  energy <- energy[, -1]
-  
-  # ACP
-  acp <- PCA(energy, graph = FALSE, scale.unit = TRUE)
-  
-  # Résumé ACP
-  output$summary_output <- renderPrint({
-    summary(acp)
-  })
-  
-  # Représentation des individus
-  output$ind_plot <- renderPlotly({
-    ind_data <- as.data.frame(acp$ind$coord)
-    ind_data$year <- rownames(ind_data)
-    
-    ggplotly(
-      ggplot(ind_data, aes(x = Dim.1, y = Dim.2, text = year)) +
-        geom_point() +
-        labs(title = "Représentation des individus")
-    )
-  })
-  
-  # Représentation des variables
-  output$var_plot <- renderPlotly({
-    var_data <- as.data.frame(acp$var$coord)
-    var_data$variable <- rownames(var_data)
-    
-    ggplotly(
-      ggplot(var_data, aes(x = Dim.1, y = Dim.2, text = variable)) +
-        geom_point() +
-        labs(title = "Représentation des variables")
-    )
+  # Affichage du graphique
+  output$acp <- renderUI({
+    includeHTML("./data/acp/acp.html")
   })
 
 }

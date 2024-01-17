@@ -14,6 +14,7 @@ library(leaflet)
 fluidPage(
   titlePanel("Energie en France"),
   tabsetPanel(
+    tabPanel("Production ACP", uiOutput("acp")),
     tabPanel("Origine Electricite", plotOutput("origineElec")),
     tabPanel("Emission CO2", plotOutput("emissionCO2")),
     tabPanel("Manque Production", plotOutput("manqueProd")),
@@ -23,10 +24,5 @@ fluidPage(
     tabPanel("Conso Secteur Electricite", plotOutput("graphique_conso_secteur_elec")),
     tabPanel("Conso Secteur Gaz", plotOutput("graphique_conso_secteur_gaz")),
     tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales")),
-    tabPanel("Production ACP", 
-      verbatimTextOutput("summary_output"), 
-      plotOutput("ind_plot"), 
-      plotOutput("var_plot")
-    )
   )
 )
