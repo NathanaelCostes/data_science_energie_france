@@ -22,6 +22,9 @@ fluidPage(
     tabPanel("Conso Filiere", plotOutput("graphique_conso_filiere")),
     tabPanel("Conso Secteur Electricite", plotOutput("graphique_conso_secteur_elec")),
     tabPanel("Conso Secteur Gaz", plotOutput("graphique_conso_secteur_gaz")),
-    tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales"))
+    tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales")),
+    tabPanel("Import et Export", plotOutput("importExport")),
+    tabPanel("Répartition de l'Export", plotOutput("repartExport")),
+    tabPanel("Répartition de l'Import", plotOutput("repartImport"))
   )
 )

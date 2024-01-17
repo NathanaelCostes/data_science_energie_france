@@ -316,4 +316,54 @@ function(input, output, session) {
       scale_x_discrete(breaks = annee)
   })
   
+  # Importation des données
+  data <- read.csv("imports-exports-commerciaux_pays_clean.csv", sep = ";")
+  
+  # Transformation de la colonne de date en format de date (si elle est au format année)
+  data$date <- as.Date(paste0(data$date, "-01-01"), format="%Y-%m-%d")
+  
+  # Trouver la valeur minimale pour l'axe y
+  min_value <- min(c(0, min(data$export_france), min(data$import_france)))
+  
+  # Tronquer les valeurs au million le plus proche avec une décimale
+  truncate_to_million_decimal <- function(x) {
+    round(x / 1e6, 1)
+  }
+  
+  output$importExport <- renderPlot({
+    # Création du graphique en barres empilées avec une échelle d'axes y améliorée
+    ggplot(data, aes(x = date)) +
+      geom_bar(aes(y = export_france, fill = "Exportations de la  France"), stat = "identity") +
+      geom_bar(aes(y = import_france, fill = "Importations de la France"), stat = "identity") +
+      geom_text(aes(x = date, y = export_france, label = truncate_to_million_decimal(export_france)), vjust = -0.5, color = "black", size = 3) +
+      geom_text(aes(x = date, y = import_france, label = truncate_to_million_decimal(import_france)), vjust = 1, color = "black", size = 3) +
+      labs(title = "Importation et exportation d'énergie de la France",
+           y = "Quantité d'énergie (en TWh)",
+           x = "Date",
+           fill = "Type d'échange") +
+      scale_y_continuous(labels = scales::label_comma(scale = 1e-6, suffix = "T"), limits = c(min_value, max(data$export_france, data$import_france))) +
+      theme_minimal()
+  })
+  
+  # Read the CSV file without specifying column names
+  data <- read.csv("exports_tr.csv", header = FALSE)
+  
+  output$repartExport <- renderPlot({
+    
+    pie_chart <- ggplot(data, aes(x = "", y = V2, fill = V1)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y", start = 0) +
+      theme_void()
+  })
+  
+  # Read the CSV file without specifying column names
+  data <- read.csv("imports_tr.csv", header = FALSE)
+  
+  output$repartImport <- renderPlot({
+    pie_chart <- ggplot(data, aes(x = "", y = V2, fill = V1)) +
+      geom_bar(stat = "identity", width = 1, color = "white") +
+      coord_polar("y", start = 0) +
+      theme_void() +
+      scale_y_continuous(labels = percent_format())  # Formatage en pourcentage
+  })
 }
