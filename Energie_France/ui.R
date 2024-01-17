@@ -13,16 +13,15 @@ library(leaflet)
 
 fluidPage(
   titlePanel("Energie en France"),
-  mainPanel(
-    plotOutput("origineElec"),
-    plotOutput("emissionCO2"),
-    plotOutput("manqueProd"),
-    plotlyOutput("choroplethPlot"),
-    plotOutput("graphique_conso_secteur"),
-    plotOutput("graphique_conso_filiere"),
-    plotOutput("graphique_conso_secteur_elec"),
-    plotOutput("graphique_conso_secteur_gaz"),
-    plotOutput("disponibiliteCentrales")
-
+  tabsetPanel(
+    tabPanel("Origine Electricite", plotOutput("origineElec")),
+    tabPanel("Emission CO2", plotOutput("emissionCO2")),
+    tabPanel("Manque Production", plotOutput("manqueProd")),
+    tabPanel("Choropleth Plot", plotlyOutput("choroplethPlot")),
+    tabPanel("Conso Secteur", plotOutput("graphique_conso_secteur")),
+    tabPanel("Conso Filiere", plotOutput("graphique_conso_filiere")),
+    tabPanel("Conso Secteur Electricite", plotOutput("graphique_conso_secteur_elec")),
+    tabPanel("Conso Secteur Gaz", plotOutput("graphique_conso_secteur_gaz")),
+    tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales"))
   )
 )
