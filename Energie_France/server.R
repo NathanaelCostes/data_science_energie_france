@@ -315,5 +315,27 @@ function(input, output, session) {
       scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
       scale_x_discrete(breaks = annee)
   })
+
+  # Création des graphiques de l'ACP pour la production
+  # Charger les données
+  information <- readLines("./data/acp/info_acp.txt")
   
+  energy <- read.table("./data/acp/data_acp.csv", header = TRUE, sep = ",")
+  rownames(energy) <- energy[, 1]
+  energy <- energy[, -1]
+  
+  # ACP
+  acp <- PCA(energy, graph = FALSE, scale.unit = TRUE)
+  
+  # Représentation des variables
+  output$acpPlot <- renderPlotly({
+    plot_ly(x = acp$var$coord[, 1], y = acp$var$coord[, 2],
+            text = rownames(acp$var$coord),
+            mode = "markers+text",
+            marker = list(size = 10),
+            textposition = "bottom center") %>%
+      layout(title = "Représentation des variables",
+             xaxis = list(title = paste("Dimension 1 (", round(acp$eig[1, 2], 2), "%)")),
+             yaxis = list(title = paste("Dimension 2 (", round(acp$eig[2, 2], 2), "%)")))
+  })
 }

@@ -22,6 +22,7 @@ fluidPage(
     tabPanel("Conso Filiere", plotOutput("graphique_conso_filiere")),
     tabPanel("Conso Secteur Electricite", plotOutput("graphique_conso_secteur_elec")),
     tabPanel("Conso Secteur Gaz", plotOutput("graphique_conso_secteur_gaz")),
-    tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales"))
+    tabPanel("Disponibilite Centrales", plotOutput("disponibiliteCentrales")),
+    tabPanel("Consomation ACP", plotOutput("consomationACP"))
   )
 )
