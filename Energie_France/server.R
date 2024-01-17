@@ -23,7 +23,6 @@ function(input, output, session) {
   
   data <- read.csv("./data/origine_elec_clean.csv", header = TRUE, sep = ";")
   
-  
   # Separate datasets for main sources and CO2 emissions
   main_sources_data <- data[data$categorie != "Emission de CO2", ]
   co2_data <- data[data$categorie == "Emission de CO2", ]
@@ -62,7 +61,7 @@ function(input, output, session) {
   })
   
   # Assuming data is your data frame
-  data <- read.csv("E:/Travail/INFO4/ProjetR/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
+  data <- read.csv("./data/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
   
   # Convert date_de_debut to a date format if it's not already
   data$date_de_debut <- as.Date(data$date_de_debut)
@@ -92,8 +91,6 @@ function(input, output, session) {
   # Divide the money values by 1000
   data_filtered <- data_filtered %>%
     mutate(total_money_lost_scaled = total_money_lost / 100)
-  
-  View(data_filtered)
   
   # Manually specify the order of levels for month_year
   custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
