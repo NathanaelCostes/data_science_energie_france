@@ -91,15 +91,15 @@ function(input, output, session) {
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
   # Manually specify the order of levels for month_year
-  #custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
-  #                  "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-  #                  "oct. 2023", "nov. 2023", "déc. 2023")
+  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+                    "oct. 2023", "nov. 2023", "déc. 2023")
   # Des fois il se met en anglais des fois en francais je ne sais pas pourquoi...
   
   # Manually specify the order of levels for month_year
-  custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
-                    "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
-                    "Oct 2023", "Nov 2023", "Dec 2023")
+  #custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
+  #                  "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
+  #                  "Oct 2023", "Nov 2023", "Dec 2023")
   
   # Transform
   DF_long <- data_filtered %>%
@@ -209,13 +209,11 @@ function(input, output, session) {
   })
   
   # Assuming data is your data frame
-  data <- read.csv("./data/disponibilite-du-parc-nucleaire-d-edf-sa-depuis-2002-clean.csv", header = TRUE, sep = ";")
-  
+  data2 <- read.csv("./data/disponibilite-du-parc-nucleaire-d-edf-sa-depuis-2002-clean.csv", header = TRUE, sep = ";")
   
   # Create a plot with lines and colored area underneath
   output$disponibiliteCentrales <- renderPlot({
-    
-    ggplot(data, aes(x = annee, y = coefficient_de_disponibilite)) +
+    ggplot(data2, aes(x = annee, y = coefficient_de_disponibilite)) +
       geom_line(color = "darkslateblue", size = 1.5) +
       geom_ribbon(aes(ymin = 0, ymax = coefficient_de_disponibilite), fill = "lightblue", alpha = 0.5) +
       ggtitle("Disponnibilité des centrales nucleaires depuis 2002") +
@@ -319,31 +317,5 @@ function(input, output, session) {
       scale_y_continuous(labels = scales::comma) +  # Utilise la virgule comme séparateur de milliers
       scale_x_discrete(breaks = annee)
   })
-
-  # Knit du document Rmd
-  rmarkdown::render("./data/acp/acp.Rmd", output_format = "html_document")
-
-  # Affichage du graphique ACP
-  output$acp <- renderUI({
-    includeHTML("./data/acp/acp.html")
-  })
-
-  # Affichage du .html de la conso annuelle
-  output$consoAnnuelle <- renderUI({
-    includeHTML("./data/conso_annuelle2.html")
-  })
-
-  # Affichage du .html de l'import export
-  output$importExport <- renderUI({
-    includeHTML("./data/import_export.html")
-  })
-
-  # Knit du document Rmd
-  rmarkdown::render("./data/import_export/import_export.Rmd", output_format = "html_document")
-
-  # Affichage du Rmd sur l'import export
-  output$importExport <- renderUI({
-    includeHTML("./data/import_export/import_export.html")
-  })
-
+  
 }
