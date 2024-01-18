@@ -1,0 +1,102 @@
+---
+title: "ACP sur la production d'électricité en France"
+output: html_document
+---
+
+# informations sur les données
+
+```{r}
+# Il se situe dans info_acp.txt print ici
+information <- readLines("info_acp.txt")
+cat(information, sep = "\n")
+```
+
+# Charger les données
+
+```{r}
+library(FactoMineR)
+# read.table() permet de lire un fichier texte
+# header = TRUE permet de dire que la premi`ere ligne du fichier contient les noms des variables
+energy <- read.table("data_acp.csv", header = TRUE, sep = ",")
+# changer l'index des lignes par la première colonne
+rownames(energy) <- energy[, 1]
+# supprimer la première colonne
+energy <- energy[, -1]
+energy
+```
+
+# ACP
+
+```{r}
+# graph = FALSE permet de ne pas afficher les graphiques
+# scale.unit = TRUE permet de centrer et réduire les variables
+# On crée l'objet acp
+acp <- PCA(energy, graph = FALSE, scale.unit = TRUE)
+summary(acp)
+```
+
+# Représentation des variables
+
+```{r}
+# Représentation des variables avec annotation des années
+plot(acp, choix = "var")
+```
+
+# Représentation des individus
+
+```{r}
+# plot() permet de représenter les individus
+# choix = "ind" permet de représenter les individus
+# Représentation des individus avec annotation des années
+plot(acp, choix = "ind")
+```
+
+# Analyse
+
+> Cette analyse porte sur la production d'électricité en France pour les années 2012 à 2020, ainsi que sur les composantes principales résultant de l'analyse en composantes principales (PCA). Voici une analyse approfondie des principales observations :
+
+## 1. Variance expliquée par les composantes principales :
+
+> Les deux premières composantes principales expliquent ensemble 77.931% de la variance, ce qui est considéré comme un pourcentage élevé. Cela suggère que ces deux dimensions capturent une grande partie de l'information contenue dans les données.
+
+## 2. Corrélations entre les variables :
+
+> - La production totale d'électricité est fortement corrélée à la production d'énergie nucléaire.
+> - Les énergies renouvelables (solaire, éolien, bioénergie) et le gaz sont corrélés entre eux, formant un groupe distinct.
+
+## 3. Analyse des dimensions principales :
+
+### Dimension 1 :
+
+> - Corrélée positivement avec le pétrole, le charbon, le nucléaire, et la production totale (énergies fossiles et nucléaire).
+> - Corrélée négativement avec les énergies renouvelables et le gaz.
+
+### Dimension 2 :
+
+> - Corrélée positivement avec la consommation totale.
+> - Légèrement corrélée négativement avec la production totale et le nucléaire.
+
+## 4. Analyse des individus (années) :
+
+> - La dimension 1 peut être interprétée comme une timeline, les années les plus récentes ayant des valeurs négatives et les plus anciennes ayant des valeurs positives.
+
+### Groupes d'années :
+
+> - 2012, 2013 : Valeurs positives pour les deux premières dimensions.
+> - 2014, 2015 : Valeur positive pour la dimension 1 et négative pour la dimension 2.
+> - 2016, 2017, 2018, 2019 : Valeurs négatives pour les deux premières dimensions.
+> - 2020 : Valeurs négatives pour la dimension 1 et positif pour la dimension 2 qui peut s'expliquer car juin 2020 est marquée par l'arrêt et le début du démantèlement de certains réacteurs.
+
+## 5. Observations spécifiques :
+
+> - La faible représentation et contribution de la variable hydroélectricité s'explique par l'exploitation déjà maximale de son potentiel en France (peu de variation d'une année sur l'autre).
+> - Les années récentes montrent une tendance à la baisse de la production totale d'électricité, avec une augmentation des énergies renouvelables.
+
+## 6. Interprétation générale :
+
+> - La France semble dépendante des énergies nucléaire et fossile, bien que les énergies renouvelables gagnent en importance.
+> - La consommation totale joue un rôle important dans la deuxième dimension et n'est corrélée à aucune autre variable, suggérant qu'elle est indépendante des capacités de production.
+
+## Conclusion :
+
+> Cette analyse suggère une évolution vers des sources d'énergie plus durables, bien que la France soit toujours fortement influencée par les énergies nucléaire et fossile. Les données indiquent également des variations significatives au fil du temps, avec des groupes d'années montrant des tendances communes.

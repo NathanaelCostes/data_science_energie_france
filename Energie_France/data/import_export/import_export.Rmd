@@ -1,0 +1,93 @@
+---
+title: "Import/export"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(knitr)
+library(tidyr)
+library(scales)
+```
+
+
+```{r}
+# Importation des données
+data <- read.csv("imports-exports-commerciaux_pays_clean.csv", sep = ";")
+
+# Transformation de la colonne de date en format de date (si elle est au format année)
+data$date <- as.Date(paste0(data$date, "-01-01"), format="%Y-%m-%d")
+
+# Trouver la valeur minimale pour l'axe y
+min_value <- min(c(0, min(data$export_france), min(data$import_france)))
+
+# Tronquer les valeurs au million le plus proche avec une décimale
+truncate_to_million_decimal <- function(x) {
+  round(x / 1e6, 1)
+}
+
+# Création du graphique en barres empilées avec une échelle d'axes y améliorée
+ggplot(data, aes(x = date)) +
+  geom_bar(aes(y = export_france, fill = "Exportations de la  France"), stat = "identity") +
+  geom_bar(aes(y = import_france, fill = "Importations de la France"), stat = "identity") +
+  geom_text(aes(x = date, y = export_france, label = truncate_to_million_decimal(export_france)), vjust = -0.5, color = "black", size = 3) +
+  geom_text(aes(x = date, y = import_france, label = truncate_to_million_decimal(import_france)), vjust = 1, color = "black", size = 3) +
+  labs(title = "Importation et exportation d'énergie de la France",
+       y = "Quantité d'énergie (en TWh)",
+       x = "Date",
+       fill = "Type d'échange") +
+  scale_y_continuous(labels = scales::label_comma(scale = 1e-6, suffix = "T"), limits = c(min_value, max(data$export_france, data$import_france))) +
+  theme_minimal()
+```
+
+```{r}
+# Load the required library
+library(ggplot2)
+
+# Read the CSV file without specifying column names
+data <- read.csv("imports_tr.csv", header = FALSE)
+
+# Calculate the percentages
+data$percentage <- (data$V2 / sum(data$V2)) * 100
+
+# Create a pie chart
+pie_chart <- ggplot(data, aes(x = "", y = percentage, fill = V1)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  labs(title = "Part d'importation d'énergie de chaque pays de 2005 à 2021",
+       y = "",
+       x = "",
+       fill = "Pays") +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5)) +
+  coord_polar("y", start = 0) +
+  theme_void()
+
+# Afficher le graphique
+print(pie_chart)
+```
+
+```{r}
+# Load the required library
+library(ggplot2)
+
+# Read the CSV file without specifying column names
+data <- read.csv("exports_tr.csv", header = FALSE)
+
+# Calculate the percentages
+data$percentage <- (data$V2 / sum(data$V2)) * 100
+
+# Create a pie chart
+pie_chart <- ggplot(data, aes(x = "", y = percentage, fill = V1)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  labs(title = "Part d'exportation d'énergie de chaque pays de 2005 à 2021",
+       y = "",
+       x = "",
+       fill = "Pays") +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), position = position_stack(vjust = 0.5)) +
+  coord_polar("y", start = 0) +
+  theme_void()
+
+# Afficher le graphique
+print(pie_chart)
+```

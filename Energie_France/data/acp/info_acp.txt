@@ -1,0 +1,18 @@
+Data for ACP
+individuals: year
+population: last 10 years
+indicators: energy consumption
+
+
+Source: https://www.rte-france.com/eco2mix/telecharger-les-indicateurs
+Columns:
+production-tot: total production in TWh
+nuclear: nuclear production in TWh
+coal: coal production in TWh
+oil: oil production in TWh
+gas: gas production in TWh
+hydro: hydro production in TWh
+wind: wind production in TWh
+solar: solar production in TWh
+bio: bio production in TWh
+consumption-tot: total consumption in TWh
