@@ -8,6 +8,7 @@
 library(conflicted)
 
 conflicts_prefer(plotly::layout)
+conflicts_prefer(dplyr::filter)
 
 library(FactoMineR)
 library(shiny)
