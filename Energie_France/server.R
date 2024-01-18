@@ -12,6 +12,7 @@ library(tidyr)
 library(dplyr)
 library(reticulate)
 library(plotly)
+library(scales)
 
 function(input, output, session) {
   
@@ -87,15 +88,15 @@ function(input, output, session) {
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
   # Manually specify the order of levels for month_year
-  #custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
-  #                  "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-  #                  "oct. 2023", "nov. 2023", "déc. 2023")
+  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+                    "oct. 2023", "nov. 2023", "déc. 2023")
   # Des fois il se met en anglais des fois en francais je ne sais pas pourquoi...
   
   # Manually specify the order of levels for month_year
-  custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
-                    "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
-                    "Oct 2023", "Nov 2023", "Dec 2023")
+  #custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
+  #                  "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
+  #                  "Oct 2023", "Nov 2023", "Dec 2023")
   
   # Transform
   DF_long <- data_filtered %>%
@@ -205,13 +206,11 @@ function(input, output, session) {
   })
   
   # Assuming data is your data frame
-  data <- read.csv("./data/disponibilite-du-parc-nucleaire-d-edf-sa-depuis-2002-clean.csv", header = TRUE, sep = ";")
-  
+  data2 <- read.csv("./data/disponibilite-du-parc-nucleaire-d-edf-sa-depuis-2002-clean.csv", header = TRUE, sep = ";")
   
   # Create a plot with lines and colored area underneath
   output$disponibiliteCentrales <- renderPlot({
-    
-    ggplot(data, aes(x = annee, y = coefficient_de_disponibilite)) +
+    ggplot(data2, aes(x = annee, y = coefficient_de_disponibilite)) +
       geom_line(color = "darkslateblue", size = 1.5) +
       geom_ribbon(aes(ymin = 0, ymax = coefficient_de_disponibilite), fill = "lightblue", alpha = 0.5) +
       ggtitle("Disponnibilité des centrales nucleaires depuis 2002") +
@@ -317,7 +316,7 @@ function(input, output, session) {
   })
   
   # Importation des données
-  data <- read.csv("imports-exports-commerciaux_pays_clean.csv", sep = ";")
+  data <- read.csv("./data/imports-exports-commerciaux_pays_clean.csv", sep = ";")
   
   # Transformation de la colonne de date en format de date (si elle est au format année)
   data$date <- as.Date(paste0(data$date, "-01-01"), format="%Y-%m-%d")
@@ -346,21 +345,21 @@ function(input, output, session) {
   })
   
   # Read the CSV file without specifying column names
-  data <- read.csv("exports_tr.csv", header = FALSE)
+  dataExport <- read.csv("./data/exports_tr.csv", header = FALSE)
   
   output$repartExport <- renderPlot({
     
-    pie_chart <- ggplot(data, aes(x = "", y = V2, fill = V1)) +
+    pie_chart <- ggplot(dataExport, aes(x = "", y = V2, fill = V1)) +
       geom_bar(stat = "identity", width = 1, color = "white") +
       coord_polar("y", start = 0) +
       theme_void()
   })
   
   # Read the CSV file without specifying column names
-  data <- read.csv("imports_tr.csv", header = FALSE)
+  dataImport <- read.csv("./data/imports_tr.csv", header = FALSE)
   
   output$repartImport <- renderPlot({
-    pie_chart <- ggplot(data, aes(x = "", y = V2, fill = V1)) +
+    pie_chart <- ggplot(dataImport, aes(x = "", y = V2, fill = V1)) +
       geom_bar(stat = "identity", width = 1, color = "white") +
       coord_polar("y", start = 0) +
       theme_void() +
