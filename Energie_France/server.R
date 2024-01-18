@@ -49,18 +49,19 @@ function(input, output, session) {
   })
   
   # Plot for CO2 emissions with a secondary y-axis
+  # Plot for CO2 emissions with a secondary y-axis
   output$emissionCO2 <- renderPlot({
     ggplot(co2_data, aes(x = annee, y = as.numeric(valeur), fill = sous_categorie)) +
       geom_col(position = "stack") +
       scale_fill_manual(values = c(
-        "CO2" = "#999999"
+        "CO2" = "#073b4c"
       )) +
-      labs(title = "Émission de CO2 par production d'élécticité",
+      labs(title = "Émission de CO2 par unité produite d'élécticité",
            x = "Année",
-           y = "g/kWh fourni") +
+           y = "gCO2/kWh fourni") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels
-  })
+  }) 	
   
   # Assuming data is your data frame
   data <- read.csv("./data/indisponibilite-moyens-prod-clean.csv", header = TRUE, sep = ";")
@@ -95,15 +96,15 @@ function(input, output, session) {
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
   # Manually specify the order of levels for month_year
-  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
-                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-                    "oct. 2023", "nov. 2023", "déc. 2023")
+  #custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+   #                 "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+  #                  "oct. 2023", "nov. 2023", "déc. 2023")
   # Des fois il se met en anglais des fois en francais je ne sais pas pourquoi...
   
   # Manually specify the order of levels for month_year
-  #custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
-  #                  "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
-  #                  "Oct 2023", "Nov 2023", "Dec 2023")
+  custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
+                    "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
+                    "Oct 2023", "Nov 2023", "Dec 2023")
   
   # Transform
   DF_long <- data_filtered %>%
