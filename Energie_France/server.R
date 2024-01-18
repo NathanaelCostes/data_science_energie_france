@@ -96,15 +96,15 @@ function(input, output, session) {
     mutate(total_money_lost_scaled = total_money_lost / 100)
   
   # Manually specify the order of levels for month_year
-  #custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
-   #                 "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
-  #                  "oct. 2023", "nov. 2023", "déc. 2023")
+  custom_order <- c("févr. 2022", "janv. 2023", "févr. 2023", 
+                    "mars 2023", "avr. 2023", "mai 2023", "juin 2023", "juil. 2023", "août 2023", "sept. 2023", 
+                    "oct. 2023", "nov. 2023", "déc. 2023")
   # Des fois il se met en anglais des fois en francais je ne sais pas pourquoi...
   
   # Manually specify the order of levels for month_year
-  custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
-                    "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
-                    "Oct 2023", "Nov 2023", "Dec 2023")
+  #custom_order <- c("Feb 2022", "Jan 2023", "Feb 2023", 
+  #                  "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", 
+  #                  "Oct 2023", "Nov 2023", "Dec 2023")
   
   # Transform
   DF_long <- data_filtered %>%
@@ -142,75 +142,6 @@ function(input, output, session) {
         plot.margin = margin(l = 30, r = 30, t = 10, b = 10, unit = "pt")  # Adjust the margins
       ) +
       ggtitle('Manque de production des centrales nucleaires françaises en 2023')
-  })
-  
-  # Read the data
-  conso <- read.csv("./data/conso_annuelle_clean.csv", sep=";")
-  
-  # Convert the 'annee' column to character format
-  conso$annee <- as.character(conso$annee)
-  
-  # Aggregate data
-  conso_sum <- conso %>%
-    group_by(libelle_region, annee_factor = factor(annee)) %>%
-    summarise(conso = sum(conso),
-              .groups = 'drop')  # Use 'drop' to return an ungrouped data frame
-  
-  # Create text column
-  conso_sum$text <- paste('Region: ', conso_sum$libelle_region, '<br>Year: ', as.character(conso_sum$annee_factor), '<br>Consumption: ', conso_sum$conso, ' MwH')
-  
-  
-  #  Create Choropleth map with time slider using plot_geo
-  fig <- plot_geo(
-    data = conso_sum,
-    geojson = 'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions-version-simplifiee.geojson',
-    featureidkey = 'properties.nom',
-    locations = ~libelle_region,
-    z = ~conso,
-    text = ~text,
-    colors = 'viridis',
-    colorbar = list(title = "Consommation energie (MwH)")
-  ) %>%
-    layout(
-      title = "Consommation d'énergie en France par région par an",
-      geo = list(
-        projection = list(type = 'natural earth'),
-        center = list(lat = 46.6, lon = 2.2),  # Adjust the center coordinates
-        scope = 'europe',
-        lataxis_range = c(42, 50),  # Adjust the latitude range
-        lonaxis_range = c(-4, 8),  # Adjust the longitude range
-        showframe = FALSE,
-        coastlinewidth = 0,
-        showcoastlines = TRUE
-      ),
-      sliders = list(
-        list(
-          active = 0,
-          xanchor = "left",
-          yanchor = "top",
-          currentvalue = list(prefix = "Année : ", visible = TRUE, xanchor = "right"),
-          steps = lapply(unique(conso_sum$annee_factor), function(year) {
-            frame_data <- conso_sum %>% filter(annee_factor %in% year)
-            list(
-              label = as.character(year),
-              method = "animate",
-              args = list(list(
-                "geo.z", frame_data$conso,
-                "geo.text", frame_data$text,
-                "geo.locations", frame_data$libelle_region,
-                "slider.value", list(year)
-              ), list(redraw = TRUE, fromcurrent = FALSE)),
-              value = as.character(year)
-              
-            )
-          })
-        )
-      )
-    )
-  
-  output$choroplethPlot <- renderPlotly({
-    # Create a Plotly plot in R using the Python-generated JSON
-    fig
   })
   
   # Assuming data is your data frame
