@@ -5,6 +5,9 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
+library(conflicted)
+
+conflicts_prefer(plotly::layout)
 
 library(FactoMineR)
 library(shiny)
@@ -318,4 +321,29 @@ function(input, output, session) {
       scale_x_discrete(breaks = annee)
   })
   
+    # Knit du document Rmd
+  rmarkdown::render("./data/acp/acp.Rmd", output_format = "html_document")
+
+  # Affichage du graphique ACP
+  output$acp <- renderUI({
+    includeHTML("./data/acp/acp.html")
+  })
+
+  # Affichage du .html de la conso annuelle
+  output$consoAnnuelle <- renderUI({
+    includeHTML("./data/conso_annuelle2.html")
+  })
+
+  # Affichage du .html de l'import export
+  output$importExport <- renderUI({
+    includeHTML("./data/import_export.html")
+  })
+
+  # Knit du document Rmd
+  rmarkdown::render("./data/import_export/import_export.Rmd", output_format = "html_document")
+
+  # Affichage du Rmd sur l'import export
+  output$importExport <- renderUI({
+    includeHTML("./data/import_export/import_export.html")
+  })
 }
