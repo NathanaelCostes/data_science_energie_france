@@ -165,11 +165,12 @@ function(input, output, session) {
   })
   
   
+  # Read the data
+  conso <- read.csv("./data/conso_annuelle_clean.csv", sep=";")
   
   # Consommation par secteur
   # Je récupère les listes des "libelle_grand_secteur" pour connaitre les valeurs possibles de cette variable
   libelle_grand_secteur <- unique(conso$libelle_grand_secteur)
-  libelle_grand_secteur
   
   # Je récupère la liste unique de la colonne "annee" pour connaitre les valeurs possibles de cette variable
   annee <- unique(conso$annee)

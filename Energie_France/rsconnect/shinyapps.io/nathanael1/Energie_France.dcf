@@ -5,7 +5,7 @@ account: nathanael1
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10940153
-bundleId:
+bundleId: 8158923
 url: https://nathanael1.shinyapps.io/Energie_France/
 version: 1
 asMultiple: FALSE
